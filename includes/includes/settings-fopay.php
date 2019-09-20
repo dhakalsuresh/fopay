@@ -32,7 +32,7 @@ return array(
 		'title'       => __('Service Code', 'woocommerce-fopay'),
 		'type'        => 'text',
 		'desc_tip'    => true,
-		'description' => __('Please enter your Fopay Service Code; this is needed in order to take payment.', 'woocommerce-fopay'),
+		'description' => __('Please enter your Fopay Service Code or ; this is needed in order to take payment.', 'woocommerce-fopay'),
 		'default'     => '',
 		'placeholder' => 'Eg: WooCommerce'
 	),

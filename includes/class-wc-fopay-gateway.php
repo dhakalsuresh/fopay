@@ -33,7 +33,7 @@ class WC_Gateway_Fopay extends WC_Payment_Gateway
 	public function __construct()
 	{
 		$this->id                 = 'fopay';
-		$this->icon               = apply_filters('woocommerce_fopay_icon', plugins_url('assets/images/fopay.png', plugin_dir_path(__FILE__)));
+		$this->icon               = apply_filters('woocommerce_fopay_icon', plugins_url('assets/images/fopay.svg', plugin_dir_path(__FILE__)));
 		$this->has_fields         = false;
 		$this->order_button_text  = __('Proceed to Fopay', 'woocommerce-fopay');
 		$this->method_title       = __('Fopay', 'woocommerce-fopay');
@@ -49,6 +49,7 @@ class WC_Gateway_Fopay extends WC_Payment_Gateway
 		$this->testmode     = 'yes' === $this->get_option('testmode', 'no');
 		$this->debug        = 'yes' === $this->get_option('debug', 'no');
 		$this->service_code = $this->get_option('service_code');
+		$this->apiUrl 		= $this->testmode ? 'https://api.clients.sandbox.fopay.io/' : 'https://api.clients.fopay.io/';
 
 		self::$log_enabled  = $this->debug;
 
@@ -88,7 +89,7 @@ class WC_Gateway_Fopay extends WC_Payment_Gateway
 	 */
 	public function is_valid_for_use()
 	{
-		return in_array(get_woocommerce_currency(), apply_filters('woocommerce_fopay_supported_currencies', array('NPR')));
+		return get_woocommerce_currency();
 	}
 
 	/**
@@ -126,30 +127,45 @@ public function init_form_fields()
  */
 public function get_transaction_url($order)
 {
-	if ($this->testmode) {
-		$this->view_transaction_url = 'https://dev.fopay.com.np/merchant#!mpyments/!mpd;tid=%s';
-	} else {
-		$this->view_transaction_url = 'https://fopay.com.np/merchant#!mpyments/!mpd;tid=%s';
-	}
+	$this->view_transaction_url = $this->apiUrl;
+
 	return parent::get_transaction_url($order);
 }
 
-/**
- * Process the payment and return the result
- *
- * @param  int $order_id
- * @return array
- */
-public function process_payment($order_id)
-{
-	include_once('includes/class-wc-gateway-fopay-request.php');
+	/**
+	 * Process the payment and return the result
+	 *
+	 * @param  int $order_id
+	 * @return array
+	 */
+	public function process_payment($order_id)
+	{
+		include_once('includes/class-wc-gateway-fopay-request.php');
 
-	$order         = wc_get_order($order_id);
-	$fopay_request = new WC_Gateway_Fopay_Request($this);
+		$order         = wc_get_order($order_id);
+		$fopay_request = new WC_Gateway_Fopay_Request($this);
+		$token = $this->getApiToken(); var_dump($token); die;
 
-	return array(
-		'result'   => 'success',
-		'redirect' => $fopay_request->get_request_url($order, $this->testmode)
-	);
-}
+		return array(
+			'result'   => 'success',
+			'redirect' => $fopay_request->get_request_url($order, $this->apiUrl, $token)
+		);
+	}
+
+	/**
+	 * get auth token
+	 *
+	 * @return void
+	 */
+	private function getApiToken() 
+	{
+		$data = [
+			'auth' => [
+				'clientCodeName' => 'client-name',
+				'token' => 'eyJhbGciOiJSUzI1NiIsInR5…bvQ0auYBWedC5rDjoByftEbIOqQSxxUfwxmJR6BrZhw'
+			],
+		];
+
+		return wp_remote_post($this->apiUrl, $data);
+	}
 }

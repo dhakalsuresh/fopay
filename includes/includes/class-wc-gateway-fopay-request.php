@@ -38,16 +38,19 @@ class WC_Gateway_Fopay_Request
 	 * @param  boolean  $sandbox
 	 * @return string
 	 */
-	public function get_request_url($order, $sandbox = false)
+	public function get_request_url($order, $endpoint, $token)
 	{
-		$fopay_args = http_build_query($this->get_fopay_args($order), '', '&');
-
-		if ($sandbox) {
-			return 'https://dev.fopay.com.np/epay/main?' . $fopay_args;
-		} else {
-			return 'https://fopay.com.np/epay/main?' . $fopay_args;
-		}
+		$requestData = $this->get_fopay_args($order);
+		
+		return wp_remote_post($endpoint, [
+			'body'    => $requestData,
+			'headers' => [
+				'Authorization' => 'Basic ' . $token,
+			],
+		]);
 	}
+
+
 
 	/**
 	 * Get Fopay Args for passing to Fopay
