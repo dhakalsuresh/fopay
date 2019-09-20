@@ -26,6 +26,13 @@ class WC_Gateway_Fopay extends WC_Payment_Gateway
 
 	/** @var WC_Logger Logger instance */
 	public static $log = false;
+	
+	CONST API_URL = 'https://api.clients.fopay.io/';
+	CONST ENDPOINT = [
+		'invoiceCreate' => 'v1/invoice/create',
+		'invoiceGet' => 'v1/invoice/get',		
+		'invoiceCancel' => 'v1/invoice/cancel',
+	];
 
 	/**
 	 * Constructor for the gateway.
@@ -48,8 +55,7 @@ class WC_Gateway_Fopay extends WC_Payment_Gateway
 		$this->description  = $this->get_option('description');
 		$this->testmode     = 'yes' === $this->get_option('testmode', 'no');
 		$this->debug        = 'yes' === $this->get_option('debug', 'no');
-		$this->service_code = $this->get_option('service_code');
-		$this->apiUrl 		= $this->testmode ? 'https://api.clients.sandbox.fopay.io/' : 'https://api.clients.fopay.io/';
+		$this->service_code = $this->get_option('service_code');		
 
 		self::$log_enabled  = $this->debug;
 
@@ -127,7 +133,7 @@ public function init_form_fields()
  */
 public function get_transaction_url($order)
 {
-	$this->view_transaction_url = $this->apiUrl;
+	$this->view_transaction_url = self::API_URL;
 
 	return parent::get_transaction_url($order);
 }
@@ -144,28 +150,10 @@ public function get_transaction_url($order)
 
 		$order         = wc_get_order($order_id);
 		$fopay_request = new WC_Gateway_Fopay_Request($this);
-		$token = $this->getApiToken(); var_dump($token); die;
-
+var_dump($fopay_request->get_request_url($order, self::API_URL . self::ENDPOINT['invoiceCreate'], $token)); die;
 		return array(
 			'result'   => 'success',
-			'redirect' => $fopay_request->get_request_url($order, $this->apiUrl, $token)
+			'redirect' => $fopay_request->get_request_url($order, self::API_URL . self::ENDPOINT['invoiceCreate'], $token)
 		);
-	}
-
-	/**
-	 * get auth token
-	 *
-	 * @return void
-	 */
-	private function getApiToken() 
-	{
-		$data = [
-			'auth' => [
-				'clientCodeName' => 'client-name',
-				'token' => 'eyJhbGciOiJSUzI1NiIsInR5…bvQ0auYBWedC5rDjoByftEbIOqQSxxUfwxmJR6BrZhw'
-			],
-		];
-
-		return wp_remote_post($this->apiUrl, $data);
 	}
 }
