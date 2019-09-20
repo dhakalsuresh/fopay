@@ -1,14 +1,10 @@
 <?php
 /**
  * Plugin Name: WooCommerce Fopay
- * Plugin URI: https://github.com/axisthemes/woocommerce-fopay
- * Description: WooCommerce Fopay is a Nepali payment gateway for WooCommerce.
+ * Description: Fopay
  * Version: 1.2.0
- * Author: AxisThemes
- * Author URI: http://axisthemes.com
  * License: GPLv2 or later
  * Text Domain: woocommerce-fopay
- * Domain Path: /languages/
  */
 
 if (!defined('ABSPATH')) {

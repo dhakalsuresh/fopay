@@ -48,7 +48,7 @@ return array(
 		'type'        => 'checkbox',
 		'label'       => __('Enable Sandbox Mode', 'woocommerce-fopay'),
 		'default'     => 'no',
-		'description' => sprintf(__('Enable Fopay sandbox to test payments. Sign up for a developer account %shere%s.', 'woocommerce-fopay'), '<a href="https://dev.fopay.com.np/" target="_blank">', '</a>')
+		'description' => sprintf(__('Enable Fopay sandbox to test payments. Sign up for a developer account %shere%s.', 'woocommerce-fopay'), '<a href="https://fopay.io/" target="_blank">', '</a>')
 	),
 	'debug' => array(
 		'title'       => __('Debug Log', 'woocommerce-fopay'),
