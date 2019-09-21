@@ -32,6 +32,7 @@ class WC_Gateway_Fopay extends WC_Payment_Gateway
 		'invoiceCreate' => 'v1/invoice/create',
 		'invoiceGet' => 'v1/invoice/get',		
 		'invoiceCancel' => 'v1/invoice/cancel',
+		'publicKeyGet' => 'v1/host/public/get'
 	];
 
 	/**
@@ -150,7 +151,7 @@ public function get_transaction_url($order)
 
 		$order         = wc_get_order($order_id);
 		$fopay_request = new WC_Gateway_Fopay_Request($this);
-var_dump($fopay_request->get_request_url($order, self::API_URL . self::ENDPOINT['invoiceCreate'], $token)); die;
+var_dump($fopay_request->get_request_url($order, self::API_URL . self::ENDPOINT['publicKeyGet'], $token)); die;
 		return array(
 			'result'   => 'success',
 			'redirect' => $fopay_request->get_request_url($order, self::API_URL . self::ENDPOINT['invoiceCreate'], $token)

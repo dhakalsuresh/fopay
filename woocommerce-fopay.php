@@ -3,7 +3,9 @@
  * Plugin Name: WooCommerce Fopay
  * Description: Fopay
  * Version: 1.2.0
- * License: GPLv2 or later
+ * License: GPLv2 or later 
+ * Author: Suresh Dhakal
+ * Author URI: https://github.com/dhakalsuresh/fopay
  * Text Domain: woocommerce-fopay
  */
 
