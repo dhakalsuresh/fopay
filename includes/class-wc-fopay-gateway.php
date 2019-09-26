@@ -32,7 +32,8 @@ class WC_Gateway_Fopay extends WC_Payment_Gateway
 		'invoiceCreate' => 'v1/invoice/create',
 		'invoiceGet' => 'v1/invoice/get',		
 		'invoiceCancel' => 'v1/invoice/cancel',
-		'publicKeyGet' => 'v1/host/public/get'
+		'publicKeyGet' => 'v1/host/public/get',
+		'publicKeyPut' => '/v1/client/public/put',
 	];
 
 	/**
@@ -148,13 +149,67 @@ public function get_transaction_url($order)
 	public function process_payment($order_id)
 	{
 		include_once('includes/class-wc-gateway-fopay-request.php');
-
-		$order         = wc_get_order($order_id);
+		$order = wc_get_order($order_id);
 		$fopay_request = new WC_Gateway_Fopay_Request($this);
-var_dump($fopay_request->get_request_url($order, self::API_URL . self::ENDPOINT['publicKeyGet'], $token)); die;
+
+		$requestData = [
+			'auth' => [
+				'clientCodeName' => $this->get_option('service_code') ?? null,
+				'token' => $this->getToken(),
+			],
+			'data' => [
+				$fopay_request->get_fopay_args($order)
+			],
+		];
+
+		
+		var_dump($requestData); die;
+
+		
+		// $attempt = wp_remote_post(self::API_URL . self::ENDPOINT['invoiceCreate'], $requestData);
 		return array(
 			'result'   => 'success',
-			'redirect' => $fopay_request->get_request_url($order, self::API_URL . self::ENDPOINT['invoiceCreate'], $token)
+			'redirect' => $fopay_request->get_request_url()
 		);
+	}
+
+
+	/**
+	 * set token
+	 *
+	 * @param string $service_code
+	 * @param string $public_key
+	 * @return void
+	 */
+	public function setToken()
+	{
+		$requestData = [
+			'auth' => [
+				'clientCodeName' => $this->get_option('service_code') ?? null,
+			],
+			'data' => [
+				'clientPublicKey' => $this->get_option('public_key') ?? null,
+			],
+		];
+
+		return wp_remote_put(self::API_URL . self::ENDPOINT['publicKeyGet'], $requestData);
+	}
+
+	/**
+	 * get token
+	 *
+	 * @param string $service_code
+	 * @return void
+	 */
+	public function getToken()
+	{
+		$requestData = [
+			'auth' => [
+				'clientCodeName' => $this->get_option('service_code') ?? null,
+				'token' => null,
+			],
+		];
+		
+		return wp_remote_get(self::API_URL . self::ENDPOINT['publicKeyGet'], $requestData);
 	}
 }

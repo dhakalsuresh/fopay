@@ -36,6 +36,14 @@ return array(
 		'default'     => '',
 		'placeholder' => 'Eg: WooCommerce'
 	),
+	'public_key' => array(
+		'title'       => __('Public Key', 'woocommerce-fopay'),
+		'type'        => 'textarea',
+		'desc_tip'    => true,
+		'description' => __('Please enter public key', 'woocommerce-fopay'),
+		'default'     => '',
+		'placeholder' => 'Eg: WooCommerce'
+	),
 	'invoice_prefix' => array(
 		'title'       => __('Invoice Prefix', 'woocommerce-fopay'),
 		'type'        => 'text',

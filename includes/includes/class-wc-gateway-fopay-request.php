@@ -40,16 +40,8 @@ class WC_Gateway_Fopay_Request
 	 */
 	public function get_request_url($order, $endpoint, $token)
 	{
-		$requestData = $this->get_fopay_args($order);
-		
-		return wp_remote_post($endpoint, [
-			'body'    => $requestData,
-			'headers' => [
-				'Authorization' => 'Basic ' . $token,
-			],
-		]);
+		return true;
 	}
-
 
 
 	/**
@@ -57,7 +49,7 @@ class WC_Gateway_Fopay_Request
 	 * @param  WC_Order $order
 	 * @return array
 	 */
-	protected function get_fopay_args($order)
+	public function get_fopay_args($order)
 	{
 		WC_Gateway_Fopay::log('Generating payment form for order ' . $order->get_order_number() . '. Notify URL: ' . $this->notify_url);
 
